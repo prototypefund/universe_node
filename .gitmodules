@@ -1,0 +1,3 @@
+[submodule "universe_frontend"]
+	path = universe_frontend
+	url = http://gitlab.com/creators-of-the-universe/universe_frontend
