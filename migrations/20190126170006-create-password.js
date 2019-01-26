@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      algorythm: {
+      algorithm: {
         type: Sequelize.STRING
       },
       salt: {

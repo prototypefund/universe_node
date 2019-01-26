@@ -11,6 +11,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 app.use(express.static(path.join(__dirname, '/universe_frontend/dist/'))); //  "public" off of current is root
 
+function noSpecialChars(str){
+ return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
+}
+
 const Directory = function(){
   this.properties = {};
   this.getPath = function(id){
@@ -70,48 +74,76 @@ const Directory = function(){
 }
 
 const User = new function(){
+  this.getSaltByUsername = function(username){
+    return new Promise(
+    (resolve,reject)=>{
+      if(noSpecialChars(username)){
+        db.User.findAll({
+          where: {
+            name: username,
+          }
+        }).then((users)=>{
+          console.log(users)
+          db.Password.findAll({
+            where: {
+              id: users[0].key_id
+            }
+          }).then((passwords)=>{
+            resolve({
+
+            })
+          }).catch(reject);
+        }).catch(reject);
+      }else{
+        reject('no valid username');
+      }
+    })
+  }
   this.create = function(username, userKeys){
     return new Promise(
       function (resolve, reject) {
-            console.log(userKeys);
-            /*
-            { publicKey: '5zA6FiYh4ajec765nQ7yGl9DPo/znHVfacgBK/IC9wY=',
-  encryptedSecretKey: 'Cm25iqV+9Qkj1iIXOqJUVfGWmtcqW3z0VKBhsWCINMRR5odcR/zTmvrH6ZHzYwAFPD+cmyztn+ZUjwyALJjEtUvb/gwQIinSPAB2QEkSNHoJhIt/3731oS0YCLJva7Oi18Ns8gvWbJtq1J4FfJvO9Wdaa2+3iAT1kVBb7oxj2p/Y5TfdlHW+QPNQby0xoNjrHQkJZUvdWjMdfEKQcbeu1qz113UUNZV1wUB4csfG22/Bhii+UtRHsIfzBzKRjDL8TAL9qcl8YmiMnrfrb4aaDEOF9vBxAzNjKCVqSdI8fiRkEhOud4lYlxSImO5UZmqyPWW1kacYg7B9zYLppzQIaci4mo2M05Pod7ApqVCGdqSyU1aAIq3dLelbSIuoBIa5kzijUDWxbg2KSwTUBWUArDc=',
-  encryptedSalt: 'dd8iHpNsZiVxy2kpB99JiNxGm+mseqh07s6yxYlxjFbBKeAY9PbFGpsPkOKjWc4fZOscENl8W24=',
-  passwordHash: 'RIIgAEYElc/Yl720UXNXjqhOu30aWTBTJwOmWXScBpCxL+QibHPT8xGais+3KTtPHJ2w3105T3nD5akYBrjLAg==' }
+          //check username
+          db.User.findAll({
+            where: {
+              name: username,
+            }
+          }).then((users)=>{
+            if(users.length > 0)
+              reject('username_taken');
+            else{
+              //store password and key
+              db.Password.create({algorithm:'tweetnacl.hash', salt:userKeys.encryptedSalt, password:userKeys.passwordHash}).then((password)=>{
+                db.Key.create({type:'identity',public_key:userKeys.publicKey,secret_key:userKeys.encryptedSecretKey}).then((key)=>{
+                  //store user
+                  db.User.create({ name:username, type:'user',password_id:password.id,key_id:key.id})
+                  .then(function(user){
 
-            */
+                    let userDir = new Directory();
+                    userDir.properties = {
+                      parent_directory_id:2, //home directory as defined in directory seed
+                      name:user.id,
+                      privacy:'s',
+                      owner:user.id
+                    }
+                    //create user home directory
+                    userDir.create().then((directory)=>{
+                      console.log('userdirectory created');
+                      resolve(user);
+                    });
 
-            db.Password.create({algorythm:'tweetnacl.hash', salt:userKeys.encryptedSalt, password:userKeys.passwordHash}).then((password)=>{
-
-              db.Key.create({type:'identity',public_key:userKeys.publicKey,secret_key:userKeys.encryptedSecretKey}).then((key)=>{
-
-                db.User.create({ name:username, type:'user',password_id:password.id,key_id:key.id})
-                .then(function(user){
-
-                  let userDir = new Directory();
-                  userDir.properties = {
-                    parent_directory_id:2,
-                    name:user.id,
-                    privacy:'p',
-                    owner:user.id
-                  }
-                  userDir.create().then((directory)=>{
-                    console.log('userdirectory created');
-                    resolve(user);
-                  });
+                  })
+                  .catch((err) => {
+                    reject(err)
+                  })
                 })
-                .catch((err) => {
-                  reject(err)
-                })
-
-
               })
+            }
 
-              
-            })
+          }).catch(function(error){
+            console.log('error');
+            console.log(errror);
+          });
 
-            
 
       });
   }
@@ -122,9 +154,14 @@ app.post('/createUser', function (req, res) {
   return User.create(req.body.username, req.body.userKeys)
   .then((user) => res.send(user))
   .catch((err) => {
-      console.log('***There was an error creating a contact', JSON.stringify(contact))
+      console.log('***There was an error creating a user')
       return res.status(400).send(err)
     })
+});
+
+app.get('/api/user/getUserSalt/:username', (req, res) => {  
+  return User.getSaltByUsername(req.params.username)
+  .then((salt) => res.send(salt))
 });
 
 app.get('/api/directories', (req, res) => {  
