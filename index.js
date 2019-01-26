@@ -83,15 +83,22 @@ const User = new function(){
             name: username,
           }
         }).then((users)=>{
-          console.log(users)
+          if(users.length == 0)
+            reject('no_user_found');
+          else
           db.Password.findAll({
             where: {
               id: users[0].key_id
             }
           }).then((passwords)=>{
-            resolve({
 
-            })
+            if(passwords.length == 0)
+              reject('no_password_found');
+            else
+              resolve({
+                algorithm:passwords[0].algorithm,
+                salt:passwords[0].salt
+              })
           }).catch(reject);
         }).catch(reject);
       }else{
