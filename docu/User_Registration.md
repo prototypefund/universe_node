@@ -26,6 +26,9 @@ Storage
 Create Directories and Files
 
 
+passwi:
+start encrypting salt with password abcabc crypto.js:65
+Uint8Array(32) [ 243, 196, 30, 123, 99, 238, 134, 149, 150, 252, … ]
 
-    
+
 

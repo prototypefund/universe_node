@@ -12,8 +12,8 @@ sequelize seed:generate --name seed-user
 
 Passwords
 ---------
-id, algorythm, salt, password
-sequelize model:generate --name Password --attributes algorythm:string,salt:string,password:string
+id, algorithm, salt, password
+sequelize model:generate --name Password --attributes algorithm:string,salt:string,password:string
 sequelize seed:generate --name seed-password
 
 
