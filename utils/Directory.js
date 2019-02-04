@@ -65,7 +65,19 @@ var Directory = function(){
             })
       });
   };
-  this.getItems = function(id){
+  this.getCollections = function(id){
+    return new Promise(
+      (resolve,reject)=>{
+        db.Collection.findAll({
+          where: {
+            directory_id: id,
+          }
+        }).then((collection)=>{
+          resolve(collection)
+        }).catch(reject);
+      });
+  }
+  this.getDirectories = function(id){
     return new Promise(
       (resolve,reject)=>{
         db.Directory.findAll({
@@ -73,8 +85,24 @@ var Directory = function(){
             parent_directory_id: id,
           }
         }).then((directories)=>{
-          resolve({directories})
+          resolve(directories)
         }).catch(reject);
+      });
+  }
+  this.getItems = function(id){
+    console.log('get items');
+    var self = this;
+    return new Promise(
+      (resolve, reject)=>{
+        self.getDirectories(id)
+        .then((directories)=>{
+          console.log('got directories');
+          self.getCollections(id)
+          .then((collections)=>{
+            resolve({directories, collections});
+          }).catch(reject)
+        })
+        .catch(reject)
       });
   };
 }
