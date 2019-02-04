@@ -21,6 +21,7 @@ app.use(express.static(path.join(__dirname, '/universe_frontend/dist/'))); //  "
 
 app.use('/api/v1',require('./routes/user'));
 app.use('/api/v1',require('./routes/directories'));
+app.use('/api/v1',require('./routes/collections'));
 
 app.listen(config.port);
 console.log('Listening on port '+config.port);

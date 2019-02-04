@@ -5,7 +5,7 @@ function noSpecialChars(str){
  return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
 }
 
-var Directory = function(){
+var Collection = function(){
   this.properties = {};
   this.getPath = function(id){
     const max_depth = 100;
@@ -38,39 +38,22 @@ var Directory = function(){
     return new Promise(
       function (resolve, reject) {
 
-            //check privacy
+        //check privacy
 
-            //check name
+        //check name
 
-            //check ownership
-
-            //get path of parent directory
-            self.getPath(self.properties.parent_directory_id).then((path)=>{
-
-              const abspath = __dirname + '/../upload/'+path+self.properties.name;
-              if (fs.existsSync(abspath)) {
-                  reject('error creating directory: path "'+path+'" exists');
-              }
-              else{
-                try{
-                  fs.mkdirSync(abspath, 0640);
-                  db.Directory.create(self.properties)
-                  .then(resolve)
-                  .catch(reject)
-                }
-                catch(e){
-                    reject(e)
-                }
-              }
-            })
+        //check ownership
+        db.Collection.create(self.properties)
+        .then(resolve)
+        .catch(reject)
       });
   };
   this.getItems = function(id){
     return new Promise(
       (resolve,reject)=>{
-        db.Directory.findAll({
+        db.Collection.findAll({
           where: {
-            parent_directory_id: id,
+            id: id,
           }
         }).then((directories)=>{
           resolve({directories})
@@ -79,4 +62,4 @@ var Directory = function(){
   };
 }
 
-module.exports=Directory;
+module.exports=Collection;
