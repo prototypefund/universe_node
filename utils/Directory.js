@@ -16,7 +16,7 @@ var Directory = function(){
       function (resolve, reject) {
         let callback = function(dir){
           if(dir === null)
-            reject('could not find directory');
+            resolve('/');
           path = dir.name+'/'+path;
           if(dir.parent_directory_id > 0){
 
@@ -94,15 +94,26 @@ var Directory = function(){
     var self = this;
     return new Promise(
       (resolve, reject)=>{
-        self.getDirectories(id)
-        .then((directories)=>{
-          console.log('got directories');
-          self.getCollections(id)
-          .then((collections)=>{
-            resolve({directories, collections});
-          }).catch(reject)
-        })
-        .catch(reject)
+
+        self.getPath(id)
+        .then((path)=>{
+          console.log('got path'+path);
+          self.getDirectories(id)
+          .then((directories)=>{
+            console.log('got directories');
+            self.getCollections(id)
+            .then((collections)=>{
+              resolve({
+                info:{
+                    path
+                },
+                directories,
+                collections
+              });
+            }).catch(reject)
+          })
+          .catch(reject)
+        }).catch(reject);
       });
   };
 }
