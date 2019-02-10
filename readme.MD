@@ -20,6 +20,6 @@ Install
 `cd universe_frontend && npm install && npm run build && cd ..`
 
 4. Seed Database
-`npm install sequelize -g
-sequelize db:migrate
+`npm install sequelize-cli -g &&
+sequelize db:migrate &&
 sequelize db:seed:all`
