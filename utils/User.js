@@ -131,7 +131,7 @@ module.exports = new function(){
 
           }).catch(function(error){
             console.log('error');
-            console.log(errror);
+            console.log(error);
           });
 
 
