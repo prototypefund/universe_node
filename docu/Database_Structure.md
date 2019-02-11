@@ -5,7 +5,7 @@ Database Structure
 Users
 ------
 id, type, name, password_id, key_id, last_activity
-sequelize model:generate --name User --attributes id:integer,type:string,name:string,password_id:int,key_id:int,last_activity:date
+sequelize model:generate --name User --attributes type:string,name:string,password_id:int,key_id:int,last_activity:date
 sequelize seed:generate --name seed-user
 
 
@@ -39,7 +39,7 @@ Directories
 -------------------------
 id, parent_directory_id, name, owner, privacy
 
-model:generate --name Directory --attributes id:integer, parent_directory_id:integer, name:string,owner:integer,privacy:string
+model:generate --name Directory --attributes parent_directory_id:integer, name:string,owner:integer,privacy:string
 sequelize seed:generate --name seed-directory
 
 
@@ -50,6 +50,8 @@ id, directory_id, owner, privacy
 Files
 -----
 id, collection_id, name, privacy
+
+model:generate --name Files --attributes parent_directory_id:integer, name:string,owner:integer,privacy:string
 
 
 
