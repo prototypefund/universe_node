@@ -20,7 +20,7 @@ var Directory = function(){
           path = dir.name+'/'+path;
           if(dir.parent_directory_id > 0){
 
-            db.Directory.findById(dir.parent_directory_id)
+            db.Directory.findByPk(dir.parent_directory_id)
                 .then(callback)
                 .catch(reject)
           }else{
@@ -28,7 +28,7 @@ var Directory = function(){
           }
 
         }
-        db.Directory.findById(id)
+        db.Directory.findByPk(id)
                 .then(callback)
                 .catch(reject)
       });
