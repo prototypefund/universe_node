@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "reset": "sequelize db:migrate:undo:all && sequelize db:migrate && git checkout upload && sequelize db:seed:all"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "connect-busboy": "0.0.2",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
     "sequelize": "^4.42.0",
