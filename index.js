@@ -25,6 +25,7 @@ app.use('/api/v1',require('./routes/user'));
 app.use('/api/v1',require('./routes/directories'));
 app.use('/api/v1',require('./routes/collections'));
 app.use('/api/v1',require('./routes/files'));
+app.use('/api/v1/links',require('./routes/links'));
 
 app.listen(config.port);
 console.log('Listening on port '+config.port);

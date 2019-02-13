@@ -1,4 +1,4 @@
-Database Structure
+ Database Structure
 ==================
 
 
@@ -21,7 +21,7 @@ Keys
 ----
 id, type, public_key, secret_key, signature
 
-sequelize model:generate --name Key --attributes type:string,public_key:string,secret_key:string,signature:string
+sequelize sequelize model:generate --name Key --attributes type:string,public_key:string,secret_key:string,signature:string
 
 sequelize seed:generate --name seed-key
 
@@ -39,7 +39,7 @@ Directories
 -------------------------
 id, parent_directory_id, name, owner, privacy
 
-model:generate --name Directory --attributes parent_directory_id:integer, name:string,owner:integer,privacy:string
+sequelize model:generate --name Directory --attributes parent_directory_id:integer, name:string,owner:integer,privacy:string
 sequelize seed:generate --name seed-directory
 
 
@@ -48,10 +48,17 @@ Collections
 id, directory_id, owner, privacy
 
 Files
------
-id, collection_id, name, privacy
+------
+id, collection_id, name, filename, store_filename, temp, owner, privacy
 
-model:generate --name Files --attributes parent_directory_id:integer, name:string,owner:integer,privacy:string
+sequelize model:generate --name File --attributes collection_id:integer,name:string,filename:string,store_filename:string,temp:boolean,owner:integer,privacy:string
+
+
+Links
+------
+id, collection_id, name, link, owner, privacy
+
+sequelize model:generate --name Link --attributes collection_id:integer,name:string,link:string,owner:integer,privacy:string
 
 
 
