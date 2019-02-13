@@ -13,7 +13,6 @@ router.get('/directories', (req, res) => {
 
 router.get('/directories/:directoryId', (req, res) => {
   var directory = new Directory();
-  console.log(req.params.directoryId);
   return directory.getItems(req.params.directoryId)
   .then((items) => res.send(items))
   .catch((error) => {

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Collection = require('../utils/Collections');  
+const Collection = require('../utils/Collection');  
 //app.get('/api/directories',jwt.verify, (req, res) => {
 router.get('/collections', (req, res) => {
   return db.Collection.findAll()
@@ -13,7 +13,7 @@ router.get('/collections', (req, res) => {
 
 router.get('/collections/:collectionId', (req, res) => {
   var collection = new Collection();
-  return collection.getItems(req.params.directoryId)
+  return collection.getItems(req.params.collectionId)
   .then((items) => res.send(items))
   .catch((error) => {
     return res.status(400).send({error:error})

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const db = require('../models');
 
+const Directory = require('./Directory');
 function noSpecialChars(str){
  return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
 }
@@ -9,10 +10,26 @@ var Collection = function(id){
   this.id = id;
   this.properties = {};
   this.getPath = function(id){
+    if(typeof id == 'undefined')
+      id = this.id;
+
     const max_depth = 100;
     let path = '';
     var self = this;
-    return this.id;
+
+    return new Promise(
+      (resolve,reject)=>{
+
+      db.Collection.findByPk(id)
+                  .then((data)=>{
+                      console.log(data.directory_id);
+
+                      new Directory().getPath(data.directory_id).then((result)=>{
+                        resolve(result);
+                      }).catch(reject);
+                  })
+                  .catch(reject)
+      });
     /*return new Promise(
       function (resolve, reject) {
         
@@ -36,14 +53,28 @@ var Collection = function(id){
   this.getItems = function(id){
     return new Promise(
       (resolve,reject)=>{
-        db.Collection.findAll({
+
+      let result = {};
+      db.Collection.findByPk(id)
+      .then((collection)=>{
+        db.File.findAll({
           where: {
-            id: id,
+            collection_id:id,
+            temp:0
           }
-        }).then((directories)=>{
-          resolve({directories})
+        }).then((files)=>{
+          result.info = {name:collection.name};
+          result.files = files;
+          resolve(result);
         }).catch(reject);
+
+      })
+      .catch((e)=>{
+        console.log('error');
+        console.log(e);
+        reject(e);
       });
+    });
   };
 }
 
