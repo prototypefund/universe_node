@@ -83,6 +83,25 @@ module.exports = new function(){
       }
     })
   }
+  this.searchByUsername = function(username){
+    return new Promise(
+    (resolve,reject)=>{
+
+        db.User.findAll({
+          attributes: ['id', 'name', 'last_activity'],
+          where: {
+            name: username,
+          }
+        }).then((users)=>{
+          if(users.length == 0)
+            reject('no_user_found');
+          else{
+            users.forEach(function(v){ delete v.password_id });
+            resolve(users);
+          }
+        }).catch(reject);
+    });
+  }
   this.create = function(username, userKeys){
     return new Promise(
       function (resolve, reject) {

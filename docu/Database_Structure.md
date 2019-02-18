@@ -21,9 +21,18 @@ Keys
 ----
 id, type, public_key, secret_key, signature
 
-sequelize sequelize model:generate --name Key --attributes type:string,public_key:string,secret_key:string,signature:string
+sequelize model:generate --name Key --attributes type:string,public_key:string,secret_key:string,signature:string
 
 sequelize seed:generate --name seed-key
+
+Requests
+--------
+id, type, user_a, user_b, payload
+
+sequelize model:generate --name Request --attributes type:string,user_a:integer,user_b:integer,payload:string
+
+
+
 
 Group Members (this table sucks->FILE!)
 ---------------------------------------
