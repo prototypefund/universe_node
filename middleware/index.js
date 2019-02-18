@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 const jwt = require('jsonwebtoken')
 
 function verifyJWTToken(token) 
@@ -20,7 +21,6 @@ module.exports = new function(){
   this.verify = function(req, res, next)
     {
       let token = (req.method === 'POST') ? req.body.token : req.query.token
-
       verifyJWTToken(token)
         .then((decodedToken) =>
         {
@@ -29,6 +29,7 @@ module.exports = new function(){
         })
         .catch((err) =>
         {
+          console.log(err);
           res.status(400)
             .json({message: "Invalid auth token provided."})
         })
@@ -47,7 +48,7 @@ module.exports = new function(){
 
       let token = jwt.sign({
          data: details.sessionData
-        }, 'sh a secret', {
+        }, process.env.JWT_SECRET, {
           expiresIn: details.maxAge,
           algorithm: 'HS256'
       });
