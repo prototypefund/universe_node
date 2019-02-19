@@ -7,16 +7,16 @@ const middleware = require("../middleware");
 
 const router = express.Router()
 
-console.log(middleware)
 router.all('*', middleware.verify)
 router.post('/', function (req, res) {
   console.log(req.body);
+  console.log(req.user);
   Request.create(req.body.type, 1, req.body.user_b)
   .then((result)=>{
-    console.log(result);
+    res.send(result);
   })
   .catch((e)=>{
-    console.log(e);
+    res.status(400).send(e);
   });
 
 });
