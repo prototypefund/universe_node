@@ -7,11 +7,8 @@ const middleware = require("../middleware");
 
 const router = express.Router()
 
-router.all('*', middleware.verify)
-router.post('/', function (req, res) {
-  console.log(req.body);
-  console.log(req.user);
-  Request.create(req.body.type, 1, req.body.user_b)
+router.post('/', middleware.verify, function (req, res) {
+  Request.create(req.body.type, req.user.id, req.body.user_b)
   .then((result)=>{
     res.send(result);
   })
