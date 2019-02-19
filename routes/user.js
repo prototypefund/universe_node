@@ -1,7 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const middleware = require("../middleware");
+const router = express.Router();
 const User = require('../utils/User');   
 const jwt = require('../middleware');
+
+
+
 
 router.post('/createUser', function (req, res) {
   return User.create(req.body.username, req.body.userKeys)
@@ -12,7 +16,7 @@ router.post('/createUser', function (req, res) {
     })
 });
 
-router.get('/user/getUserSalt/:username', (req, res) => {  
+router.get('/getUserSalt/:username', (req, res) => {  
   return User.getSaltByUsername(req.params.username)
   .then((salt) => res.send(salt))
   .catch((error) => {
@@ -20,13 +24,30 @@ router.get('/user/getUserSalt/:username', (req, res) => {
   })
 });
 
-router.post('/user/login', (req, res) => {
+router.post('/login', (req, res) => {
   User.auth(req.body.username,req.body.passwordHash).then((user)=>{
-    console.log('asd');
-    let token = jwt.create(user);
+
+    let details = {
+      sessionData:user
+    }
+    let token = jwt.create(details);
     res.send({user:user, jwt:token});
   }).catch((err) => {
     res.status(400).send(err);
+  })
+});
+
+router.get('/reload', middleware.verify, (req, res) => {
+
+  User.fetchReload(req.user.id)
+  .then((result)=>{
+
+    res.status(200).send(result)
+  })
+  .catch((e)=>{
+
+    res.status(400).send(e)
+
   })
 });
 
