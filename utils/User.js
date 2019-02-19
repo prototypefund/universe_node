@@ -156,4 +156,30 @@ module.exports = new function(){
 
       });
   }
+  this.getOpenRequests = function(userid){
+     return new Promise((resolve, reject)=>{
+       db.Request.findAll({
+            where: {
+              user_a: userid,
+            }
+       })
+       .then((requests)=>{
+        resolve(requests);
+       })
+       .catch((e)=>{
+        reject(e);
+       })
+     });
+  }
+  this.fetchReload = function(userid){
+    return new Promise((resolve, rejoct)=>{
+      this.getOpenRequests(userid)
+      .then((openRequests)=>{
+        resolve({openRequests});
+      })
+      .catch((e)=>{
+        reject(e);
+      });
+    });
+  }
 }
