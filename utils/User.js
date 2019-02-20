@@ -1,5 +1,6 @@
 const db = require('../models'); 
 const Directory = require('./Directory'); 
+const Collection = require('./Collection'); 
 
 function noSpecialChars(str){
  return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
@@ -106,7 +107,6 @@ module.exports = new function(){
     return new Promise(
       function (resolve, reject) {
 
-            console.log('asdasd');
           //check username
           db.User.findAll({
             where: {
@@ -132,10 +132,40 @@ module.exports = new function(){
                       privacy:'s',
                       owner:user.id
                     }
-                    console.log(userDir);
                     //create user home directory
                     userDir.create().then((directory)=>{
-                      resolve(user);
+
+                        //create user config collection
+                        let collection = new Collection();
+
+                        collection.properties = {
+                          directory_id:directory.id,
+                          name:'userconfig',
+                          info:'',
+                          privacy:'h',
+                          owner:user.id
+                        }
+                        console.log('create user collection...');
+                        collection.create()
+                        .then((collection) => {
+                          console.log('collection #'+collection.id+' created');
+                          user.update({
+                            userconfig_collection:collection.id
+                          }).then((user)=>{
+                            console.log('done updating the user')
+                            resolve(user);
+                          }).catch((e)=>{
+                            console.log('error updating the user')
+                            reject(e);
+                          })
+
+
+                        })
+                        .catch((error)=>{
+                          reject(error)
+                        });
+
+                      ;
                     }).catch((e)=>{
                         reject(e);
                     });
