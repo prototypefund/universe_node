@@ -118,8 +118,11 @@ module.exports = new function(){
             if(users.length > 0)
               reject('username_taken');
             else{
+
+              let passwordObj;
               //store password and key
               db.Password.create({algorithm:'tweetnacl.hash', salt:userKeys.encryptedSalt, password:userKeys.passwordHash}).then((password)=>{
+                passwordObj = password;
                 db.Key.create({type:'identity',public_key:userKeys.publicKey,secret_key:userKeys.encryptedSecretKey}).then((key)=>{
                   //store user
                   db.User.create({ name:username, type:'user',password_id:password.id,key_id:key.id})
@@ -155,25 +158,53 @@ module.exports = new function(){
                             console.log('done updating the user')
                             resolve(user);
                           }).catch((e)=>{
-                            console.log('error updating the user')
-                            reject(e);
-                          })
+                            //delete key, user and collection
 
+                            console.log('error updating the user')
+
+                            //delete password and key
+                            password.destroy().on('success', function(p) {
+                               key.destroy().on('success', function(k) {
+
+                                  user.destroy().then((res)=>{
+
+                                    reject(error);
+                                  });
+                               });
+                            });
+                          })
 
                         })
                         .catch((error)=>{
-                          reject(error)
+                          //delete password and key
                         });
-
-                      ;
                     }).catch((e)=>{
-                        reject(e);
+
+                      console.log('error creating directory, deleting password, key and user')
+                      passwordObj.destroy().then((p)=> {
+                        key.destroy().then((k)=>{
+                          user.destroy().then((u)=>{
+                            reject(e);
+                          });
+                        });
+                      });
                     });
 
                   })
-                  .catch((err) => {
-                    reject(err)
+                  .catch((e) => {
+
+                    console.log('error creating user, deleting password and key')
+                    passwordObj.destroy().then((p)=> {
+                        key.destroy().then((k)=>{
+                            reject(e);
+                        });
+                    });
                   })
+                }).catch((e)=>{
+                  console.log('error creating key, deleting password')
+                  passwordObj.destroy().then((p)=> {
+                    reject(e);
+                  });
                 })
               })
             }
