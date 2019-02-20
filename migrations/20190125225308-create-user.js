@@ -20,6 +20,12 @@ module.exports = {
       key_id: {
         type: Sequelize.INTEGER
       },
+      userconfig_collection: {
+        type: Sequelize.INTEGER
+      },
+      buddylist_file: {
+        type: Sequelize.INTEGER
+      },
       last_activity: {
         type: Sequelize.DATE
       },
