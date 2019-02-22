@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const db = require('../models');
 
 const Directory = require('./Directory');  
@@ -7,8 +8,60 @@ const Collection = require('./Collection');
 var File = function(id){
   this.id = id;
   this.properties = {};
-  this.getPath = function(id){
+  this.readFile = function(id){
+    if(!id)
+      id = this.id
+    else
+      this.id = id
+
+    return new Promise((resolve,reject)=>{
+      this.getFileData()
+      .then((file)=>{
+        new Collection(file.collection_id).getPath()
+        .then((collectionPath)=>{
+          let filePath = path.resolve(__dirname, '../upload/'+collectionPath+file.store_filename);
+          fs.readFile(filePath, function(err, f){
+              // use the array
+              resolve({
+                file:file,
+                filecontent:f.toString()});
+          });
+        })
+        .catch((e)=>{
+          reject(e);
+        })
+      })
+      .catch((e)=>{
+        reject(e)
+      });
+    });
+
     
+  }
+  this.getPath = function(id){
+    if(!id)
+      id = this.id
+    else
+      this.id = id
+
+    return new Promise((resolve,reject)=>{
+      this.getFileData()
+      .then((file)=>{
+        new Collection(file.collection_id).getPath()
+        .then((collectionPath)=>{
+          let filePath = path.resolve(__dirname, '../upload/'+collectionPath+file.store_filename);
+          resolve(filePath);
+        })
+        .catch((e)=>{
+          reject(e);
+        })
+      })
+      .catch((e)=>{
+        reject(e)
+      });
+    });
+
+
   }
   this.create = function(){
     console.log('create file');
@@ -86,6 +139,22 @@ var File = function(id){
       })
 
   };
+
+  this.getFileData = function(id){
+    if(!id)
+      id = this.id;
+
+
+    return new Promise((resolve, reject)=>{
+      db.File.findByPk(id)
+      .then((file)=>{
+        resolve(file);
+      })
+      .catch((e)=>{
+        reject(e);
+      })
+    });
+  }
 }
 
 module.exports=File;
