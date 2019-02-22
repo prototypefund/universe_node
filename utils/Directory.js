@@ -53,7 +53,7 @@ var Directory = function(){
               }
               else{
                 try{
-                  fs.mkdirSync(abspath, 0640);
+                  fs.mkdirSync(abspath);
                   db.Directory.create(self.properties)
                   .then(resolve)
                   .catch(reject)
