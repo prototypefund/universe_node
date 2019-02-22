@@ -51,4 +51,30 @@ router.get('/reload', middleware.verify, (req, res) => {
   })
 });
 
+
+router.get('/buddylist', middleware.verify, (req, res) => {
+
+  User.getBuddylist(req.user.id)
+  .then((result)=>{
+    console.log('asd');
+    res.status(200).send(result)
+  })
+  .catch((e)=>{
+    console.log('ERROR');
+    console.log(e);
+    res.status(400).send(e)
+
+  })
+});
+
+router.post('/setConfig', middleware.verify, (req, res) => {
+  User.setConfig(req.user.id, req.body.index, req.body.value)
+  .then((result)=>{
+    res.status(200).send(result)
+  })
+  .catch((e)=>{
+    res.status(400).send(e)
+  })
+});
+
 module.exports = router;
