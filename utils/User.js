@@ -1,6 +1,7 @@
 const db = require('../models'); 
 const Directory = require('./Directory'); 
 const Collection = require('./Collection'); 
+const File = require('./File'); 
 
 function noSpecialChars(str){
  return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
@@ -113,7 +114,6 @@ module.exports = new function(){
               name: username,
             }
           }).then((users)=>{
-            console.log('asdasd');
 
             if(users.length > 0)
               reject('username_taken');
@@ -233,7 +233,7 @@ module.exports = new function(){
      });
   }
   this.fetchReload = function(userid){
-    return new Promise((resolve, rejoct)=>{
+    return new Promise((resolve, reject)=>{
       this.getOpenRequests(userid)
       .then((openRequests)=>{
         resolve({openRequests});
@@ -241,6 +241,60 @@ module.exports = new function(){
       .catch((e)=>{
         reject(e);
       });
+    });
+  }
+  this.getUserData = function(userid){
+    return new Promise((resolve, reject)=>{
+      db.User.findByPk(userid)
+      .then((user)=>{
+        resolve(user);
+      })
+      .catch((e)=>{
+        reject(e);
+      })
+    });
+  }
+  this.getBuddylist = function(userid){
+    console.log('get buddylist for user #'+userid);
+    return new Promise((resolve, reject)=>{
+      this.getUserData(userid)
+      .then((user)=>{
+        if(!user.buddylist_file)
+          resolve(false)
+        else{
+          new File(user.buddylist_file).readFile()
+          .then((file)=>{
+            resolve(file);
+          })
+        }
+      })
+      .catch((e)=>{
+        reject(e);
+      });
+    });
+  }
+  this.setConfig = function(userid, index, value){
+    let self = this;
+    return new Promise((resolve, reject)=>{
+      //check if index is in allowed config fields
+      if(['last_activity', 'buddylist_file'].indexOf(index) == -1)
+        reject('index not valid')
+      else
+        self.getUserData(userid)
+        .then((user)=>{
+            let updateObj = {}
+            updateObj[index] = value;
+            
+            user.update(updateObj).then((user)=>{
+              resolve(user);
+            }).catch((e)=>{
+              //delete key, user and collection
+              reject(e);
+            })
+        })
+        .catch((e)=>{
+
+        });
     });
   }
 }
