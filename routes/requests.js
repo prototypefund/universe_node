@@ -15,6 +15,14 @@ router.post('/', middleware.verify, function (req, res) {
   .catch((e)=>{
     res.status(400).send(e);
   });
-
+});
+router.delete('/:requestId', middleware.verify, function (req, res) {
+  Request.delete(req.params.requestId, req.user.id)
+  .then((result)=>{
+    res.send(result);
+  })
+  .catch((e)=>{
+    res.status(400).send(e);
+  });
 });
 module.exports = router;

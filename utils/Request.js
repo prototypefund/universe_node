@@ -17,4 +17,19 @@ module.exports = new function(){
       });
 
   }
+  this.delete = function(requestId, userid){
+    return new Promise(
+      function(resolve, reject){
+        db.Request.findByPk(requestId)
+        .then((req)=>{
+          if(req.user_a == userid || req.user_b == userid)
+            req.destroy().then(function(p){
+              resolve(p);
+            })
+          else
+            reject('not authorized');
+        })
+        .catch(reject);
+      });
+  }
 }
