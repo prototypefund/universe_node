@@ -16,6 +16,13 @@ router.post('/createUser', function (req, res) {
     })
 });
 
+router.get('/getUserInfo/:userid', (req, res) => {  
+  return User.getUsername(req.params.userid)
+  .then((info) => res.send(info))
+  .catch((error) => {
+    return res.status(400).send({error:error})
+  })
+});
 router.get('/getUserSalt/:username', (req, res) => {  
   return User.getSaltByUsername(req.params.username)
   .then((salt) => res.send(salt))

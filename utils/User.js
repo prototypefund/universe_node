@@ -85,6 +85,24 @@ module.exports = new function(){
       }
     })
   }
+  this.getUserInfo = function(userid){
+    return new Promise(
+    (resolve,reject)=>{
+        db.User.findAll({
+          where: {
+            id: userid,
+          }
+        }).then((users)=>{
+          if(users.length == 0)
+            reject('no_user_found');
+            resolve({
+                id:user.id,
+                username:user.name,
+                realname:user.realname
+            })
+        }).catch(reject);
+    })
+  }
   this.searchByUsername = function(username){
     return new Promise(
     (resolve,reject)=>{
