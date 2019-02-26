@@ -4,8 +4,8 @@
 
 Users
 ------
-id, type, name, password_id, key_id, last_activity
-sequelize model:generate --name User --attributes type:string,name:string,password_id:int,key_id:int,last_activity:date
+id, type, name, realname password_id, key_id, last_activity
+sequelize model:generate --name User --attributes type:string,name:string,realname:string,password_id:int,key_id:int,last_activity:date
 sequelize seed:generate --name seed-user
 
 
@@ -30,8 +30,6 @@ Requests
 id, type, user_a, user_b, payload
 
 sequelize model:generate --name Request --attributes type:string,user_a:integer,user_b:integer,payload:string
-
-
 
 
 Group Members (this table sucks->FILE!)
