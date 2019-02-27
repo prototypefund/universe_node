@@ -16,6 +16,19 @@ function guidGenerator() {
     return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 }
 
+router.get('/files/:fileId', (req, res) => {
+	new File().readFile(req.params.fileId)
+    .then((file)=>{
+          	console.log('got file!')
+          	console.log(file);
+          	res.send(file);
+            
+    })
+    .catch((e)=>{
+    	return res.status(400).send({error:e})
+    });
+});
+
 router.post('/files/upload/temp', function (req, res) {
    if(req.busboy) {
    		let fileObj = new File();
