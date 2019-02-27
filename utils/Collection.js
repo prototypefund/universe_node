@@ -63,9 +63,22 @@ var Collection = function(id){
             temp:0
           }
         }).then((files)=>{
-          result.info = {name:collection.name};
-          result.files = files;
-          resolve(result);
+
+
+
+          db.Link.findAll({
+            where: {
+              collection_id:id
+            }
+          }).then((links)=>{
+            result.info = {name:collection.name};
+            result.files = files;
+            result.links = links;
+            resolve(result);
+          })
+          .catch(reject);
+
+
         }).catch(reject);
 
       })
