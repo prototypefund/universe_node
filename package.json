@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint":"./node_modules/.bin/eslint index.js middleware/index.js routes/*.js utils/*.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "reset": "sequelize db:migrate:undo:all && sequelize db:migrate && rm -rf upload/ && git checkout upload && sequelize db:seed:all"
   },
@@ -16,5 +17,8 @@
     "jsonwebtoken": "^8.4.0",
     "sequelize": "^4.42.0",
     "sqlite3": "^4.0.6"
+  },
+  "devDependencies": {
+    "eslint": "^5.14.1"
   }
 }

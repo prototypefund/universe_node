@@ -4,7 +4,7 @@ const Collection = require('./Collection');
 const File = require('./File'); 
 
 function noSpecialChars(str){
- return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
+ return !/[~`!#$%&*+=\-\]\\';,/{}|\\":<>]/g.test(str);
 }
 
 module.exports = new function(){
@@ -15,13 +15,13 @@ module.exports = new function(){
         {
           if (err || !decodedToken)
           {
-            return reject(err)
+            return reject(err);
           }
 
-          resolve(decodedToken)
-        })
-    })
-  }
+          resolve(decodedToken);
+        });
+    });
+  };
   this.auth = function(username,passwordHash){
     return new Promise(
     (resolve,reject)=>{
@@ -50,8 +50,8 @@ module.exports = new function(){
       }else{
         reject('no valid username');
       }
-    })
-  }
+    });
+  };
   this.getSaltByUsername = function(username){
     return new Promise(
     (resolve,reject)=>{
@@ -77,13 +77,13 @@ module.exports = new function(){
                 algorithm:passwords[0].algorithm,
                 encryptedSalt:passwords[0].salt,
                 passwordHash:passwords[0].password //@sec remove
-              })
+              });
           }).catch(reject);
         }).catch(reject);
       }else{
         reject('no valid username');
       }
-    })
+    });
   }
   this.getUserInfo = function(userid){
     return new Promise(
