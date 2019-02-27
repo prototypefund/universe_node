@@ -22,9 +22,12 @@ var File = function(id){
           let filePath = path.resolve(__dirname, '../upload/'+collectionPath+file.store_filename);
           fs.readFile(filePath, function(err, f){
               // use the array
-              resolve({
-                file:file,
-                filecontent:f.toString()});
+              if(err)
+                reject(err)
+              else
+                resolve({
+                  file:file,
+                  filecontent:f.toString()});
           });
         })
         .catch((e)=>{
@@ -35,8 +38,6 @@ var File = function(id){
         reject(e)
       });
     });
-
-    
   }
   this.getPath = function(id){
     if(!id)
@@ -60,8 +61,6 @@ var File = function(id){
         reject(e)
       });
     });
-
-
   }
   this.create = function(){
     console.log('create file');
