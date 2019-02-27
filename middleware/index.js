@@ -1,6 +1,6 @@
 'use strict';
 require('dotenv').config();
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
 function verifyJWTToken(token) 
 {
@@ -10,12 +10,12 @@ function verifyJWTToken(token)
     {
       if (err || !decodedToken)
       {
-        return reject(err)
+        return reject(err);
       }
 
-      resolve(decodedToken)
-    })
-  })
+      resolve(decodedToken);
+    });
+  });
 }
 module.exports = new function(){
   this.verify = function(req, res, next)
@@ -31,25 +31,25 @@ module.exports = new function(){
         .then((decodedToken) =>
         {
           req.user = decodedToken.data
-          next()
+          next();
         })
         .catch((err) =>
         {
           console.log(err);
           res.status(400)
-            .json({message: "Invalid auth token provided."})
-        })
-    }
+            .json({message: 'Invalid auth token provided.'});
+        });
+    };
     this.create = function(details)
     {
       if (typeof details !== 'object')
       {
-        details = {}
+        details = {};
       }
 
       if (!details.maxAge || typeof details.maxAge !== 'number')
       {
-        details.maxAge = 3600
+        details.maxAge = 3600;
       }
 
       let token = jwt.sign({
@@ -59,6 +59,6 @@ module.exports = new function(){
           algorithm: 'HS256'
       });
 
-      return token
-    }
-}
+      return token;
+    };
+};
