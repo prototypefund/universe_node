@@ -85,7 +85,7 @@ var File = function(id){
 
     if(typeof id == 'undefined')
       id = this.id;
-
+    console.log('save temp #'+id);
     return new Promise(
       (resolve,reject)=>{
 
@@ -95,10 +95,9 @@ var File = function(id){
                   //get path of file
                   new Collection(file.collection_id).getPath()
                   .then((path)=>{
-
                     //rename file
-                    let store_filename = './upload/'+path+file.store_filename;
-                    fs.rename(store_filename, store_filename.slice(0,-5) /* remove .temp at the end */, function(err) {
+                    let store_filepath= './upload/'+path+file.store_filename;
+                    fs.rename(store_filepath, store_filename.slice(0,-5) /* remove .temp at the end */, function(err) {
                         if ( !err ) {
 
                           file.update({

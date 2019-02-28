@@ -77,18 +77,14 @@ router.post('/files/upload/temp', function (req, res) {
 //removes .temp from the file name
 //and updates db entry
 router.post('/files/savetemp', function (req, res) {
-
-
     let promises = [];
 
     for(var i in req.body.files){
-        promises.push = new File(req.body.files[i]).saveTemp
+        promises.push = new File(req.body.files[i]).saveTemp()
     }
-
     Promise.all(promises.map(p => p.catch(e => e)))
       .then(results => {
         res.send({status:'ok'});
-        console.log(results)
 
       }) // 1,Error: 2,3
       .catch(e => console.log(e));
