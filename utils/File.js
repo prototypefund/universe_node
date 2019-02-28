@@ -96,7 +96,8 @@ var File = function(id){
                   new Collection(file.collection_id).getPath()
                   .then((path)=>{
                     //rename file
-                    let store_filepath= './upload/'+path+file.store_filename;
+                    let store_filename = file.store_filename;
+                    let store_filepath = './upload/'+path+file.store_filename;
                     fs.rename(store_filepath, store_filename.slice(0,-5) /* remove .temp at the end */, function(err) {
                         if ( !err ) {
 
@@ -105,6 +106,7 @@ var File = function(id){
                             store_filename:store_filename.slice(0,-5)
                           })
                           .then((result)=>{
+                            console.log('done updating the file! '+store_filename)
                             resolve(result)
                           })
                           .catch((e)=>{
