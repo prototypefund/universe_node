@@ -44,7 +44,7 @@ var Directory = function(){
         if(directory.length == 0)
           reject('no directory found')
         else
-          resolve(directory);
+          resolve(directory[0]);
       }).catch(reject);
 
     });
@@ -70,7 +70,7 @@ var Directory = function(){
                 //for automated adding of directories it makes it way easier to send the directory_id with the rejection
                 self.getDirectoryByPath(self.properties.path)
                 .then((directory)=>{
-                  reject({error:'error creating directory: path "'+path+'" exists ', directory_id:directory.id});
+                  reject({error:'error creating directory: path "'+path+'" exists', directory_id:directory.id});
                 })
                   
               }
