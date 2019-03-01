@@ -17,7 +17,7 @@ router.post('/createUser', function (req, res) {
 });
 
 router.get('/getUserInfo/:userid', (req, res) => {  
-  return User.getUsername(req.params.userid)
+  return User.getUserInfo(req.params.userid)
   .then((info) => res.send(info))
   .catch((error) => {
     return res.status(400).send({error:error})

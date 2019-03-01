@@ -93,13 +93,15 @@ module.exports = new function(){
             id: userid,
           }
         }).then((users)=>{
+          console.log(users);
           if(users.length == 0)
             reject('no_user_found');
-            resolve({
-                id:user.id,
-                username:user.name,
-                realname:user.realname
-            })
+          
+          resolve({
+                id:users[0].id,
+                username:users[0].name,
+                realname:users[0].realname
+          })
         }).catch(reject);
     })
   }
