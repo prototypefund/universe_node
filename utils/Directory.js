@@ -19,7 +19,6 @@ var Directory = function(){
             resolve('/');
           path = dir.name+'/'+path;
           if(dir.parent_directory_id > 0){
-
             db.Directory.findByPk(dir.parent_directory_id)
                 .then(callback)
                 .catch(reject)
@@ -32,6 +31,24 @@ var Directory = function(){
                 .then(callback)
                 .catch(reject)
       });
+  }
+  this.getDirectoryByPath = function(path){
+    //@sec information disclosure
+    console.log('resolving path to directory: '+path);
+    return new Promise((resolve, reject)=>{
+      db.Directory.findAll({
+        where: {
+          path: path,
+        }
+      }).then((directory)=>{
+        if(directory.length == 0)
+          reject('no directory found')
+        else
+          resolve(directory);
+      }).catch(reject);
+
+    });
+
   }
   this.create = function(){
     var self = this;
@@ -46,14 +63,20 @@ var Directory = function(){
 
             //get path of parent directory
             self.getPath(self.properties.parent_directory_id).then((path)=>{
-
-              const abspath = __dirname + '/../upload/'+path+self.properties.name;
+              self.properties.path = path+self.properties.name;
+              const abspath = __dirname + '/../upload/'+self.properties.path;
               if (fs.existsSync(abspath)) {
-                  let directory_id = 6;
-                  reject({error:'error creating directory: path "'+path+'" exists ', directory_id:directory_id});
+
+                //for automated adding of directories it makes it way easier to send the directory_id with the rejection
+                self.getDirectoryByPath(self.properties.path)
+                .then((directory)=>{
+                  reject({error:'error creating directory: path "'+path+'" exists ', directory_id:directory.id});
+                })
+                  
               }
               else{
                 try{
+
                   fs.mkdirSync(abspath);
                   db.Directory.create(self.properties)
                   .then(resolve)

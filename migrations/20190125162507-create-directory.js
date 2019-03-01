@@ -11,6 +11,9 @@ module.exports = {
       parent_directory_id: {
         type: Sequelize.INTEGER
       },
+      path: {
+        type: Sequelize.STRING
+      },
       name: {
         type: Sequelize.STRING
       },
