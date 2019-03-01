@@ -204,7 +204,7 @@ router.post('/files/update', function (req, res) {
             //done with uploading file
 
             //delete old file
-            fs.unlink('./server/upload/my.csv',function(err){
+            fs.unlink(filePath,function(err){
                 if(err) return res.send(err);
                 console.log('file deleted successfully');
 
@@ -212,7 +212,7 @@ router.post('/files/update', function (req, res) {
                 fs.rename(filePath+'.temp', filePath, function(err) {
                     if ( err ) return res.send(err)
                         
-                    res.send(result);
+                    res.send({status:'ok'});
                     return req.pipe(req.busboy);
 
                 });
