@@ -14,7 +14,10 @@ var Directory = function(){
 
     return new Promise(
       function (resolve, reject) {
+        console.log('getting path for dir '+id)
         let callback = function(dir){
+          console.log('got dir!');
+          console.log(dir);
           if(dir === null)
             resolve('/');
           path = dir.name+'/'+path;

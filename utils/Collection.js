@@ -25,6 +25,7 @@ var Collection = function(id){
                       console.log(data.directory_id);
 
                       new Directory().getPath(data.directory_id).then((result)=>{
+                        console.log('got directory path:'+result);
                         resolve(result);
                       }).catch(reject);
                   })

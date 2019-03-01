@@ -98,7 +98,7 @@ var File = function(id){
                     //rename file
                     let store_filename = file.store_filename;
                     let store_filepath = './upload/'+path+file.store_filename;
-                    fs.rename(store_filepath, store_filename.slice(0,-5) /* remove .temp at the end */, function(err) {
+                    fs.rename(store_filepath, store_filepath.slice(0,-5) /* remove .temp at the end */, function(err) {
                         if ( !err ) {
 
                           file.update({
