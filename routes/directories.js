@@ -20,6 +20,8 @@ router.get('/directories/:directoryId', (req, res) => {
   });
 });
 router.post('/directories', (req, res) => {
+  console.log('create directory');
+  console.log(req.body);
   let directory = new Directory();
   directory.properties = {
     parent_directory_id:req.body.parent_directory_id,
@@ -29,9 +31,10 @@ router.post('/directories', (req, res) => {
   directory.create()
   .then((result) => res.send(result))
   .catch((error)=>{
-    return res.status(400).send({error:error});
+    return res.status(400).send(error);
   });
 });
+
 
 
 module.exports = router;

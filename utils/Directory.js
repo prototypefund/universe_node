@@ -49,7 +49,8 @@ var Directory = function(){
 
               const abspath = __dirname + '/../upload/'+path+self.properties.name;
               if (fs.existsSync(abspath)) {
-                  reject('error creating directory: path "'+path+'" exists');
+                  let directory_id = 6;
+                  reject({error:'error creating directory: path "'+path+'" exists ', directory_id:directory_id});
               }
               else{
                 try{
