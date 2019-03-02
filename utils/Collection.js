@@ -45,10 +45,24 @@ var Collection = function(id){
 
         //check name
 
+        db.Collection.findAll({
+          where: {
+            directory_id:self.properties.directory_id,
+            name:self.properties.name
+          }
+        })
+        .then((collections)=>{
+          if(collections.length == 0)
+            db.Collection.create(self.properties)
+            .then(resolve)
+            .catch(reject)
+          else
+            reject({error:'A collection with the same name allready exists in the same directory',collection_id:collections[0].id})
+        })
+        .catch(reject);
+
         //check ownership
-        db.Collection.create(self.properties)
-        .then(resolve)
-        .catch(reject)
+        
       });
   };
   this.getItems = function(id){
