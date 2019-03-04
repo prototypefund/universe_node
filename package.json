@@ -6,6 +6,8 @@
   "scripts": {
     "lint":"./node_modules/.bin/eslint index.js middleware/index.js routes/*.js utils/*.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+
+    "start": "node index.js",
     "reset": "sequelize db:migrate:undo:all && sequelize db:migrate && rm -rf upload/ && git checkout upload && sequelize db:seed:all"
   },
   "author": "",
