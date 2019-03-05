@@ -1,0 +1,5 @@
+image: node:8.12.0
+all_tests:
+  script:
+   - cd universe_frontend && npm install && npm run build
+   - npm run test

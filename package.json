@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint":"./node_modules/.bin/eslint index.js middleware/index.js routes/*.js utils/*.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-
+    "lint": "./node_modules/.bin/eslint index.js middleware/index.js routes/*.js utils/*.js",
+    "test": "./node_modules/mocha/bin/mocha",
     "start": "node index.js",
     "reset": "sequelize db:migrate:undo:all && sequelize db:migrate && rm -rf upload/ && git checkout upload && sequelize db:seed:all"
   },
@@ -21,6 +20,8 @@
     "sqlite3": "^4.0.6"
   },
   "devDependencies": {
-    "eslint": "^5.14.1"
+    "eslint": "^5.14.1",
+    "mocha": "^6.0.2",
+    "puppeteer": "^1.12.2"
   }
 }
