@@ -5,6 +5,7 @@
 
 const assert = require('assert')
 const puppeteer = require('puppeteer')
+const server = require('../index.js')
 let browser
 let page
 
@@ -23,4 +24,6 @@ describe('Check  Homepage', () => {
 
 after(async () => {
   await browser.close()
+
+    server.close();
 })

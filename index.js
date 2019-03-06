@@ -44,6 +44,7 @@ app.get('/api/v1/search/:keyword', (req, res) => {
     });
 });
 
-app.listen(config.port);
+let server = app.listen(config.port);
 console.log('Listening on port '+config.port);
+module.exports = server;
 
