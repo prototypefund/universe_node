@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint index.js middleware/index.js routes/*.js utils/*.js",
-    "test": "./node_modules/mocha/bin/mocha",
+    "test": "npm run server & ./node_modules/mocha/bin/mocha",
     "start": "node index.js",
     "reset": "sequelize db:migrate:undo:all && sequelize db:migrate && rm -rf upload/ && git checkout upload && sequelize db:seed:all",
-    "server": "node index.js"
+    "server": "npm run start"
   },
   "author": "",
   "license": "ISC",
