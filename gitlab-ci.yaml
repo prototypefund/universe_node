@@ -1,5 +1,10 @@
-image: node:8.12.0
-all_tests:
+image: alekzonder/puppeteer:latest
+
+before_script:
+  - npm install
+  - mkdir -p universe_frontend/
+  - wget --quiet -o universe_frontend/dist.zip https://gitlab.com/creators-of-the-universe/universe_frontend/-/jobs/artifacts/master/download?job=build
+  - node node_modules/onezip/bin/onezip.js -x $(pwd)/universe_frontend/dist.zip
+test:
   script:
-   - cd universe_frontend && npm install && npm run build
-   - npm run test
+    - npm run test
