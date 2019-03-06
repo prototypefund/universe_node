@@ -4,6 +4,8 @@ before_script:
   - npm install
   - mkdir -p universe_frontend/
   - wget --quiet -o universe_frontend/dist.zip https://gitlab.com/creators-of-the-universe/universe_frontend/-/jobs/artifacts/master/download?job=build
+  - ls universe_frontend
+  - ls universe_frontend/dist/
   - node node_modules/onezip/bin/onezip.js -x $(pwd)/universe_frontend/dist.zip
 test:
   script:
