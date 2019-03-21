@@ -138,7 +138,6 @@ module.exports = new function(){
             if(users.length > 0)
               reject('username_taken');
             else{
-
               let passwordObj;
               //store password and key
               db.Password.create({algorithm:'tweetnacl.hash', salt:userKeys.encryptedSalt, password:userKeys.passwordHash}).then((password)=>{
@@ -157,11 +156,10 @@ module.exports = new function(){
                     }
                     //create user home directory
                     userDir.create().then((directory)=>{
-
                         //create user config collection
-                        let collection = new Collection();
+                        let userconfigCollection = new Collection();
 
-                        collection.properties = {
+                        userconfigCollection.properties = {
                           directory_id:directory.id,
                           name:'userconfig',
                           info:'',
@@ -169,37 +167,47 @@ module.exports = new function(){
                           owner:user.id
                         }
                         console.log('create user collection...');
-                        collection.create()
-                        .then((collection) => {
-                          console.log('collection #'+collection.id+' created');
-                          user.update({
-                            userconfig_collection:collection.id
-                          }).then((user)=>{
-                            console.log('done updating the user')
-                            resolve(user);
-                          }).catch((e)=>{
-                            //delete key, user and collection
+                        userconfigCollection.create()
+                        .then((userconfigCollection) => {
 
-                            console.log('error updating the user')
+                          let messagesCollection = new Collection();
+                          messagesCollection.properties = {
+                            directory_id:directory.id,
+                            name:'messages',
+                            info:'this collection is used to store chat messages',
+                            privacy:'h',
+                            owner:user.id
+                          }
+                          messagesCollection.create()
+                          .then((messagesCollection) => {
 
-                            //delete password and key
-                            password.destroy().on('success', function(p) {
-                               key.destroy().on('success', function(k) {
+                            //update user row to change chat and userconfig collection
+                            user.update({
+                              userconfig_collection:userconfigCollection.id,
+                              messages_collection:messagesCollection.id,
+                            }).then((user)=>{
+                              console.log('done updating the user',userconfigCollection.id)
+                              resolve(user);
+                            }).catch((e)=>{
+                              //delete key, user and collection
+                              console.log('error updating the user')
+                              //delete password and key
+                              password.destroy().on('success', function(p) {
+                                 key.destroy().on('success', function(k) {
 
-                                  user.destroy().then((res)=>{
+                                    user.destroy().then((res)=>{
 
-                                    reject(error);
-                                  });
-                               });
-                            });
+                                      reject(error);
+                                    });
+                                 });
+                              });
+                            })
                           })
-
                         })
                         .catch((error)=>{
                           //delete password and key
                         });
                     }).catch((e)=>{
-
                       console.log('error creating directory, deleting password, key and user')
                       passwordObj.destroy().then((p)=> {
                         key.destroy().then((k)=>{

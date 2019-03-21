@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     password_id: DataTypes.INTEGER,
     key_id: DataTypes.INTEGER,
     userconfig_collection: DataTypes.INTEGER,
+    messages_collection: DataTypes.INTEGER,
     buddylist_file: DataTypes.INTEGER,
     last_activity: DataTypes.DATE
   }, {});

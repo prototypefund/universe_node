@@ -26,6 +26,9 @@ module.exports = {
       userconfig_collection: {
         type: Sequelize.INTEGER
       },
+      messages_collection: {
+        type: Sequelize.INTEGER
+      },
       buddylist_file: {
         type: Sequelize.INTEGER
       },
