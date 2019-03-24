@@ -2,10 +2,7 @@ const db = require('../models');
 const Directory = require('./Directory'); 
 const Collection = require('./Collection'); 
 const File = require('./File'); 
-
-function noSpecialChars(str){
- return !/[~`!#$%&*+=\-\]\\';,/{}|\\":<>]/g.test(str);
-}
+const Utils = require('./Utils'); 
 
 module.exports = new function(){
   this.new = function(){
@@ -25,7 +22,7 @@ module.exports = new function(){
   this.auth = function(username,passwordHash){
     return new Promise(
     (resolve,reject)=>{
-      if(noSpecialChars(username)){
+      if(Utils.noSpecialChars(username)){
         db.User.findAll({
           where: {
             name: username,
@@ -55,7 +52,7 @@ module.exports = new function(){
   this.getSaltByUsername = function(username){
     return new Promise(
     (resolve,reject)=>{
-      if(noSpecialChars(username)){
+      if(Utils.noSpecialChars(username)){
         db.User.findAll({
           where: {
             name: username,
@@ -127,8 +124,9 @@ module.exports = new function(){
   this.create = function(username, userKeys){
     return new Promise(
       function (resolve, reject) {
-
           //check username
+          if(!Utils.noSpecialChars(username))
+            reject('username_contains_illegal_chars');
           db.User.findAll({
             where: {
               name: username,

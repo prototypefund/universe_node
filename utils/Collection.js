@@ -2,10 +2,6 @@ const fs = require('fs');
 const db = require('../models');
 
 const Directory = require('./Directory');
-function noSpecialChars(str){
- return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
-}
-
 var Collection = function(id){
   this.id = id;
   this.properties = {};
