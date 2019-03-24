@@ -1,10 +1,6 @@
 const fs = require('fs');
 const db = require('../models');
 
-function noSpecialChars(str){
- return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
-}
-
 var Directory = function(){
   this.properties = {};
   this.getPath = function(id){

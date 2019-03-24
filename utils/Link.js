@@ -1,10 +1,6 @@
 const fs = require('fs');
 const db = require('../models');
 
-function noSpecialChars(str){
- return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
-}
-
 var Link = function(id){
   this.id = id;
   this.properties = {};
