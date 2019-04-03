@@ -3,6 +3,8 @@ const Directory = require('./Directory');
 const Collection = require('./Collection'); 
 const File = require('./File'); 
 const Utils = require('./Utils'); 
+const fs = require('fs');
+
 
 module.exports = new function(){
   this.new = function(){
@@ -321,6 +323,125 @@ module.exports = new function(){
         .catch((e)=>{
 
         });
+    });
+  };
+  this.getLastMessageFile = function(receiver_id,sender_id){
+    return new Promise((resolve,reject)=>{
+      db.User.findByPk(receiver_id)
+      .then((user)=>{
+        //get the receivers message collection    
+        let collection = new Collection();
+        collection.getItems(user.messages_collection)
+        .then((items)=>{
+          //check if a messagefile for sender already exists
+          let message_file_id = false;
+          let message_files = []; //array with all message files which belong to sender
+          for(var i in items.files){
+            /*
+            The message files have the following format:
+            fileid_userid (message files shouldnt be >1M, always the last file is used for writing)
+            example content of messages_collection
+            0_4 (fileid = 0, userid = 4)
+            1_4 (fileid = 1, userid = 4)
+            0_9
+            1_9
+            0_1123
+            0_256789 (fileid = 0, userid = 256789)
+            */
+            if(items.files[i].filename.split('_')[1] == sender_id){
+              message_files.push(items.files[i]);
+            }
+          }
+          //if no messages_file for sender
+          //exists -> create a new one
+          if(message_files.length === 0){
+            let filename, storeFilename;
+            filename = storeFilename = '0_'+sender_id;
+            let file = new File();
+            file.properties = {
+              collection_id:user.messages_collection,
+              name:filename,
+              filename:filename,
+              store_filename:storeFilename,
+              temp:0,
+              owner:sender_id,
+              privacy:'h'
+            }
+            file.create().then((result)=>{
+              //new file created! get path & set content
+              file.getPath().then((path)=>{
+                console.log('got path', path);
+                fs.writeFile(path, '', function(err) {
+                    if(err) {
+                      reject(err);
+                    }
+                console.log(file);
+                    resolve(file);
+                }); 
+
+              }).catch((e)=>{
+                reject(e);
+              });
+
+            })
+            .catch((e)=>{
+              reject(e);
+            })
+          }else{
+            resolve(new File(message_files[0].id));
+          }
+        })
+        .catch((e)=>{
+          reject(e)
+        });
+      })
+      .catch((e)=>{
+        reject(e)
+      })
+    });
+
+  }
+  this.getMessages = function(receiver_id,sender_id){
+      let self = this;
+      return new Promise((resolve,reject)=>{
+        self.getLastMessageFile(receiver_id,sender_id)
+        .then((file)=>{
+          file.readFile()
+          .then((fileObj)=>{
+            resolve(fileObj)
+          })
+          .catch((e)=>{
+            reject(e);
+          })
+        });
+      });
+  }
+  this.sendMessage = function(receiver_id,sender_id,message){
+    let self = this;
+    return new Promise((resolve,reject)=>{
+
+
+
+      self.getLastMessageFile(receiver_id,sender_id)
+      .then((file)=>{
+              file.getPath()
+              .then((path)=>{
+                fs.appendFile(path, '"'+message+'",\n', function (err) {
+                  if (err){
+                    reject(err);
+                  }
+                  resolve();
+                });
+              })
+              .catch((e)=>{
+                reject(e)
+              })
+
+      })
+      .catch((e)=>{
+
+      });
+
     });
   }
 }
