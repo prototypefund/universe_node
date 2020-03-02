@@ -3,7 +3,6 @@ The universeOS
 The universeOS is a Project which tries to give users the possibility to "share a desktop" with friends, co-workers or like-minded person.
 
 
-Website: http://www.universeOS.org
 Twitter: https://twitter.com/universeos
 
 
